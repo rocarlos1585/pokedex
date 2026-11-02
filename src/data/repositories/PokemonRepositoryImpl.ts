@@ -11,6 +11,7 @@ import { PokemonLocalDataSource } from '../datasources/local/PokemonLocalDataSou
 import { PokemonRemoteDataSource } from '../datasources/remote/PokemonRemoteDataSource';
 import { toPokemonDetail } from '../mappers/PokemonDetailMapper';
 import { toPaginatedPokemonList } from '../mappers/PokemonListMapper';
+import { toAppError } from '../../domain/errors/toAppError';
 
 export class PokemonRepositoryImpl implements PokemonRepository {
   constructor(
@@ -52,7 +53,7 @@ export class PokemonRepositoryImpl implements PokemonRepository {
     }
     throw error instanceof AppError
       ? error
-      : new AppError(ErrorCode.Unknown, 'Unexpected repository error', error);
+      : toAppError(error);
   }
 
   private async readSafely<T>(
