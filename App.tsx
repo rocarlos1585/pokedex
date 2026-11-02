@@ -1,19 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { createDependencies } from './src/core/di/container';
+import { DependenciesProvider } from './src/core/di/DependenciesContext';
+
+const dependencies = createDependencies();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <DependenciesProvider dependencies={dependencies}>
+      <View style={styles.container}>
+        <Text>Pokédex</Text>
+        <StatusBar style="auto" />
+      </View>
+    </DependenciesProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
