@@ -24,3 +24,10 @@ src/
 ├── domain/       # Modelos, enums, tipos, interfaces, errores y casos de uso
 ├── data/         # DTOs, mappers, fuentes de datos y repositorios
 └── core/         # Cliente HTTP, almacenamiento e inyección de dependencias
+```
+
+## Librerías utilizadas
+ 
+| Librería | Justificación |
+|---|---|
+| `@react-native-async-storage/async-storage` | Persistencia local clave-valor; suficiente para el volumen de datos de la app. Se accede a través de la interfaz `KeyValueStorage`. |
