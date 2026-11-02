@@ -31,6 +31,9 @@ src/
 | Librería | Justificación |
 |---|---|
 | `@react-native-async-storage/async-storage` | Persistencia local clave-valor; suficiente para el volumen de datos de la app. Se accede a través de la interfaz `KeyValueStorage`. |
+| `@react-navigation/native`, `@react-navigation/native-stack` | Navegación entre listado y detalle con rutas y parámetros tipados; usa la navegación nativa de cada plataforma. |
+| `react-native-screens`, `react-native-safe-area-context` | Dependencias requeridas por `native-stack`; la segunda también gestiona las áreas seguras de la pantalla. |
+ 
 
 ### Persistencia
  
