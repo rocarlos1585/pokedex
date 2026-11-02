@@ -31,3 +31,12 @@ src/
 | Librería | Justificación |
 |---|---|
 | `@react-native-async-storage/async-storage` | Persistencia local clave-valor; suficiente para el volumen de datos de la app. Se accede a través de la interfaz `KeyValueStorage`. |
+
+### Persistencia
+ 
+Se decidio una estrategia *network-first* con caché local por encima de *cache-first* para la parsistencia de datos ya que el listado es pequeño y la api es rapida:
+
+1. el primer paso es consultar a la API, si responde correctamente el resultado se guarda en cache y se muestra.
+2. si la API fall se consulta el dato que exista en cache indicando que proviene de ahi.
+3. Si no hay red ni caché, se muestra el estado de error.
+Se guardan las páginas del listado y los detalles consultados, como modelos de dominio, junto con la fecha en que se guardaron.
