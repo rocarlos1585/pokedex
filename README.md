@@ -17,4 +17,10 @@ npx expo start
 
 - Expo con template `blank-typescript`.
 - TypeScript en modo `strict`.
-
+- Clean Architecture con la siguiente estructura:
+```
+src/
+├── components/, hooks/, navigation/, screens/, theme/   # Presentación
+├── domain/       # Modelos, enums, tipos, interfaces, errores y casos de uso
+├── data/         # DTOs, mappers, fuentes de datos y repositorios
+└── core/         # Cliente HTTP, almacenamiento e inyección de dependencias
