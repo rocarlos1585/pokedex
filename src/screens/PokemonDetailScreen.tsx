@@ -6,6 +6,7 @@ import { StatBar } from '../components/StatBar';
 import { DataOrigin } from '../domain/enums/DataOrigin';
 import { usePokemonDetail } from '../hooks/usePokemonDetail';
 import { PokemonDetailScreenProps } from '../navigation/types';
+import { pokemonTypeStyles, statLabels } from '../theme';
 import { getErrorMessage } from '../utils/errorMessages';
 import {
   formatHeight,
@@ -49,7 +50,7 @@ export function PokemonDetailScreen({ route }: PokemonDetailScreenProps) {
       <View style={styles.types}>
         {pokemon.types.map(type => (
           <Text key={type} style={styles.typeChip}>
-            {formatPokemonName(type)}
+            {pokemonTypeStyles[type].label}
           </Text>
         ))}
       </View>
@@ -74,7 +75,7 @@ export function PokemonDetailScreen({ route }: PokemonDetailScreenProps) {
         Estadísticas base
       </Text>
       {pokemon.stats.map(stat => (
-        <StatBar key={stat.name} label={formatPokemonName(stat.name)} value={stat.baseValue} />
+        <StatBar key={stat.name} label={statLabels[stat.name]} value={stat.baseValue} />
       ))}
     </ScrollView>
   );

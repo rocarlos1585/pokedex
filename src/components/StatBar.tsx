@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
-const MAX_BASE_STAT = 255;
+import { MAX_BASE_STAT } from '../theme';
 
 interface StatBarProps {
   readonly label: string;
@@ -12,11 +11,7 @@ function StatBarComponent({ label, value }: StatBarProps) {
   const percentage = Math.min(value / MAX_BASE_STAT, 1) * 100;
 
   return (
-    <View
-      style={styles.row}
-      accessible
-      accessibilityLabel={`${label}: ${value}`}
-    >
+    <View style={styles.row} accessible accessibilityLabel={`${label}: ${value}`}>
       <Text style={styles.label}>{label}</Text>
       <Text style={styles.value}>{value}</Text>
       <View style={styles.track}>
