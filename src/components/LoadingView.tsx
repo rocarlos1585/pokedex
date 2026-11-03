@@ -1,0 +1,13 @@
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+
+export function LoadingView() {
+  return (
+    <View style={styles.container} accessibilityLabel="Cargando" accessibilityRole="progressbar">
+      <ActivityIndicator size="large" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+});
