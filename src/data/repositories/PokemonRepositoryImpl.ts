@@ -1,5 +1,4 @@
 import { DataOrigin } from '../../domain/enums/DataOrigin';
-import { ErrorCode } from '../../domain/enums/ErrorCode';
 import { AppError } from '../../domain/errors/AppError';
 import { PokemonRepository } from '../../domain/interfaces/PokemonRepository';
 import { PokemonDetail } from '../../domain/models/PokemonDetail';
