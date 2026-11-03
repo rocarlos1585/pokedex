@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { MAX_BASE_STAT } from '../theme';
+import { border, colors, MAX_BASE_STAT } from '../theme';
 
 interface StatBarProps {
   readonly label: string;
@@ -24,9 +24,22 @@ function StatBarComponent({ label, value }: StatBarProps) {
 export const StatBar = memo(StatBarComponent);
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
-  label: { width: 120, fontSize: 13 },
-  value: { width: 32, fontSize: 13, fontWeight: '600', textAlign: 'right' },
-  track: { flex: 1, height: 8, borderRadius: 4, backgroundColor: '#EEEEEE', overflow: 'hidden' },
-  fill: { height: 8, borderRadius: 4, backgroundColor: '#4A90E2' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 3 },
+  label: { width: 72, fontSize: 12, color: colors.textMuted },
+  value: { width: 28, fontSize: 13, fontWeight: '700', textAlign: 'right', color: colors.ink },
+  track: {
+    flex: 1,
+    height: 12,
+    borderRadius: 6,
+    borderWidth: border.thinWidth,
+    borderColor: colors.ink,
+    backgroundColor: colors.statTrack,
+    overflow: 'hidden',
+  },
+  fill: {
+    height: '100%',
+    backgroundColor: colors.statFill,
+    borderRightWidth: border.thinWidth,
+    borderColor: colors.ink,
+  },
 });

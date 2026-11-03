@@ -32,4 +32,9 @@ export const pokemonTypeStyles: Record<PokemonType, PokemonTypeStyle> = {
   [PokemonType.Fairy]: { label: 'Hada', color: '#EE99AC', textColor: DARK_TEXT, scene: SceneKind.Mystic },
 };
 
+export function getSceneForTypes(types: readonly PokemonType[]): SceneKind {
+    const [primaryType] = types;
+    return primaryType ? pokemonTypeStyles[primaryType].scene : DEFAULT_SCENE;
+  }
+
 export const DEFAULT_SCENE = SceneKind.Meadow;

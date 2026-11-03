@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { border, colors, radius, spacing } from '../theme';
 
 export function CacheBanner() {
   return (
@@ -9,6 +10,13 @@ export function CacheBanner() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 10, marginBottom: 12, borderRadius: 8, backgroundColor: '#FFF3CD' },
-  text: { fontSize: 13, textAlign: 'center' },
+  container: {
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: border.thinWidth,
+    borderColor: colors.ink,
+    backgroundColor: colors.cacheWarning,
+  },
+  text: { fontSize: 13, fontWeight: '700', textAlign: 'center', color: colors.ink },
 });

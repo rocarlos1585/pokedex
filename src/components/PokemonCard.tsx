@@ -1,7 +1,9 @@
 import { memo, useCallback } from 'react';
-import { Image, Pressable, StyleSheet, Text } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { PokemonSummary } from '../domain/models/PokemonSummary';
+import { border, colors, radius, spacing } from '../theme';
 import { formatPokemonName, formatPokemonNumber } from '../utils/formatters';
+import { ComicSurface } from './ComicSurface';
 
 interface PokemonCardProps {
   readonly pokemon: PokemonSummary;
@@ -14,22 +16,32 @@ function PokemonCardComponent({ pokemon, onPress }: PokemonCardProps) {
 
   return (
     <Pressable
-      style={styles.card}
+      style={styles.pressable}
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={`${name}, número ${pokemon.id}`}
       accessibilityHint="Abre el detalle del Pokémon"
     >
-      <Text style={styles.number}>{formatPokemonNumber(pokemon.id)}</Text>
-      <Image
-        source={{ uri: pokemon.imageUrl }}
-        style={styles.image}
-        resizeMode="contain"
-        accessibilityIgnoresInvertColors
-      />
-      <Text style={styles.name} numberOfLines={1}>
-        {name}
-      </Text>
+      {({ pressed }) => (
+        <ComicSurface pressed={pressed} contentStyle={styles.content}>
+          <View style={styles.numberTag}>
+            <Text style={styles.number}>{formatPokemonNumber(pokemon.id)}</Text>
+          </View>
+          <View style={styles.backdrop}>
+            <View style={styles.backdropCircle} />
+            <View style={styles.backdropGround} />
+            <Image
+              source={{ uri: pokemon.imageUrl }}
+              style={styles.image}
+              resizeMode="contain"
+              accessibilityIgnoresInvertColors
+            />
+          </View>
+          <Text style={styles.name} numberOfLines={1}>
+            {name}
+          </Text>
+        </ComicSurface>
+      )}
     </Pressable>
   );
 }
@@ -37,8 +49,43 @@ function PokemonCardComponent({ pokemon, onPress }: PokemonCardProps) {
 export const PokemonCard = memo(PokemonCardComponent);
 
 const styles = StyleSheet.create({
-  card: { flex: 1, margin: 6, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#DDDDDD', backgroundColor: '#FFFFFF', alignItems: 'center' },
-  number: { alignSelf: 'flex-end', fontSize: 12, color: '#666666' },
+  pressable: { flex: 1, margin: spacing.sm },
+  content: { padding: spacing.sm, gap: spacing.sm },
+  numberTag: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    borderRadius: radius.sm,
+    borderWidth: border.thinWidth,
+    borderColor: colors.ink,
+    backgroundColor: colors.surface,
+  },
+  number: { fontSize: 12, fontWeight: '700', color: colors.ink },
+  backdrop: {
+    height: 110,
+    borderRadius: radius.md,
+    borderWidth: border.thinWidth,
+    borderColor: colors.ink,
+    backgroundColor: colors.cardBackdrop,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  backdropCircle: {
+    position: 'absolute',
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: colors.cardBackdropShape,
+  },
+  backdropGround: {
+    position: 'absolute',
+    bottom: -150,
+    width: 300,
+    height: 180,
+    borderRadius: 150,
+    backgroundColor: '#F5D58A',
+  },
   image: { width: 96, height: 96 },
-  name: { marginTop: 8, fontSize: 16, fontWeight: '600' },
+  name: { fontSize: 15, fontWeight: '700', textAlign: 'center', color: colors.ink },
 });

@@ -1,111 +1,168 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CacheBanner } from '../components/CacheBanner';
+import { ComicSurface } from '../components/ComicSurface';
+import { DetailHeader } from '../components/DetailHeader';
 import { ErrorView } from '../components/ErrorView';
 import { LoadingView } from '../components/LoadingView';
 import { StatBar } from '../components/StatBar';
+import { TypeChip } from '../components/TypeChip';
+import { TypeScene } from '../components/TypeScene';
 import { DataOrigin } from '../domain/enums/DataOrigin';
+import { PokemonDetail } from '../domain/models/PokemonDetail';
 import { usePokemonDetail } from '../hooks/usePokemonDetail';
 import { PokemonDetailScreenProps } from '../navigation/types';
-import { pokemonTypeStyles, statLabels } from '../theme';
+import {
+  border,
+  colors,
+  getSceneForTypes,
+  radius,
+  shadow,
+  spacing,
+  statLabels,
+  typography,
+} from '../theme';
 import { getErrorMessage } from '../utils/errorMessages';
 import {
   formatHeight,
   formatOptionalNumber,
   formatPokemonName,
-  formatPokemonNumber,
   formatWeight,
 } from '../utils/formatters';
 
-export function PokemonDetailScreen({ route }: PokemonDetailScreenProps) {
-  const { id } = route.params;
+export function PokemonDetailScreen({ navigation, route }: PokemonDetailScreenProps) {
+  const { id, name } = route.params;
   const { state, retry } = usePokemonDetail(id);
 
-  if (state.status === 'loading') {
-    return <LoadingView />;
-  }
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <DetailHeader name={name} id={id} onBack={navigation.goBack} />
 
-  if (state.status === 'error') {
-    return <ErrorView message={getErrorMessage(state.error)} onRetry={retry} />;
-  }
+      {state.status === 'loading' && <LoadingView />}
 
-  const { pokemon, origin } = state;
-  const name = formatPokemonName(pokemon.name);
+      {state.status === 'error' && (
+        <ErrorView message={getErrorMessage(state.error)} onRetry={retry} />
+      )}
 
+      {state.status === 'success' && (
+        <DetailContent
+          pokemon={state.pokemon}
+          isFromCache={state.origin === DataOrigin.Cache}
+          displayName={name}
+        />
+      )}
+    </SafeAreaView>
+  );
+}
+
+interface DetailContentProps {
+  readonly pokemon: PokemonDetail;
+  readonly isFromCache: boolean;
+  readonly displayName: string;
+}
+
+function DetailContent({ pokemon, isFromCache, displayName }: DetailContentProps) {
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      {origin === DataOrigin.Cache && <CacheBanner />}
+      {isFromCache && <CacheBanner />}
 
-      <Image
-        source={{ uri: pokemon.imageUrl }}
-        style={styles.image}
-        resizeMode="contain"
-        accessibilityLabel={`Imagen de ${name}`}
-      />
-
-      <Text style={styles.number}>{formatPokemonNumber(pokemon.id)}</Text>
-      <Text style={styles.name} accessibilityRole="header">
-        {name}
-      </Text>
+      <ComicSurface borderRadius={radius.xl} offset={5}>
+        <TypeScene scene={getSceneForTypes(pokemon.types)} style={styles.scene}>
+          <Image
+            source={{ uri: pokemon.imageUrl }}
+            style={styles.image}
+            resizeMode="contain"
+            accessibilityLabel={`Imagen de ${displayName}`}
+          />
+        </TypeScene>
+      </ComicSurface>
 
       <View style={styles.types}>
         {pokemon.types.map(type => (
-          <Text key={type} style={styles.typeChip}>
-            {pokemonTypeStyles[type].label}
-          </Text>
+          <TypeChip key={type} type={type} />
         ))}
       </View>
 
       <View style={styles.infoRow}>
-        <InfoItem label="Altura" value={formatHeight(pokemon.heightInMeters)} />
-        <InfoItem label="Peso" value={formatWeight(pokemon.weightInKilograms)} />
-        <InfoItem label="Exp. base" value={formatOptionalNumber(pokemon.baseExperience)} />
+        <InfoPill label="Peso" value={formatWeight(pokemon.weightInKilograms)} />
+        <InfoPill label="Altura" value={formatHeight(pokemon.heightInMeters)} />
+        <InfoPill label="Exp. base" value={formatOptionalNumber(pokemon.baseExperience)} />
       </View>
 
-      <Text style={styles.sectionTitle} accessibilityRole="header">
-        Habilidades
-      </Text>
-      {pokemon.abilities.map(ability => (
-        <Text key={ability.name} style={styles.ability}>
-          {formatPokemonName(ability.name)}
-          {ability.isHidden ? ' (oculta)' : ''}
+      <ComicSurface contentStyle={styles.panel}>
+        <Text style={styles.sectionTitle} accessibilityRole="header">
+          Habilidades
         </Text>
-      ))}
+        <View style={styles.abilities}>
+          {pokemon.abilities.map(ability => (
+            <View
+              key={ability.name}
+              style={[styles.abilityTag, ability.isHidden && styles.abilityTagHidden]}
+            >
+              <Text style={styles.abilityText}>
+                {formatPokemonName(ability.name)}
+                {ability.isHidden ? ' · oculta' : ''}
+              </Text>
+            </View>
+          ))}
+        </View>
 
-      <Text style={styles.sectionTitle} accessibilityRole="header">
-        Estadísticas base
-      </Text>
-      {pokemon.stats.map(stat => (
-        <StatBar key={stat.name} label={statLabels[stat.name]} value={stat.baseValue} />
-      ))}
+        <Text style={[styles.sectionTitle, styles.statsTitle]} accessibilityRole="header">
+          Estadísticas base
+        </Text>
+        {pokemon.stats.map(stat => (
+          <StatBar key={stat.name} label={statLabels[stat.name]} value={stat.baseValue} />
+        ))}
+      </ComicSurface>
     </ScrollView>
   );
 }
 
-interface InfoItemProps {
+interface InfoPillProps {
   readonly label: string;
   readonly value: string;
 }
 
-function InfoItem({ label, value }: InfoItemProps) {
+function InfoPill({ label, value }: InfoPillProps) {
   return (
     <View style={styles.infoItem} accessible accessibilityLabel={`${label}: ${value}`}>
-      <Text style={styles.infoValue}>{value}</Text>
       <Text style={styles.infoLabel}>{label}</Text>
+      <ComicSurface
+        backgroundColor={colors.accent}
+        borderRadius={radius.md}
+        offset={shadow.smallOffset}
+        style={styles.infoSurface}
+        contentStyle={styles.infoValueBox}
+      >
+        <Text style={styles.infoValue}>{value}</Text>
+      </ComicSurface>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: 20, gap: 8 },
-  image: { width: 200, height: 200, alignSelf: 'center' },
-  number: { textAlign: 'center', fontSize: 14, color: '#666666' },
-  name: { textAlign: 'center', fontSize: 28, fontWeight: '700' },
-  types: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginVertical: 8 },
-  typeChip: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, borderWidth: 1, fontSize: 13 },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 12 },
-  infoItem: { alignItems: 'center' },
-  infoValue: { fontSize: 18, fontWeight: '600' },
-  infoLabel: { fontSize: 12, color: '#666666' },
-  sectionTitle: { marginTop: 16, fontSize: 18, fontWeight: '700' },
-  ability: { fontSize: 15 },
+  safeArea: { flex: 1, backgroundColor: colors.background },
+  content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl, gap: spacing.lg },
+  scene: { height: 260 },
+  image: { width: 190, height: 190 },
+  types: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm },
+  infoRow: { flexDirection: 'row', gap: spacing.md },
+  infoItem: { flex: 1, alignItems: 'center', gap: 6 },
+  infoLabel: { ...typography.label, color: colors.textMuted },
+  infoSurface: { alignSelf: 'stretch' },
+  infoValueBox: { paddingVertical: 6, alignItems: 'center' },
+  infoValue: { fontSize: 15, fontWeight: '700', color: colors.ink },
+  panel: { padding: spacing.lg, gap: spacing.sm },
+  sectionTitle: { ...typography.subheading, color: colors.ink },
+  statsTitle: { marginTop: spacing.sm },
+  abilities: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  abilityTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+    borderWidth: border.thinWidth,
+    borderColor: colors.ink,
+  },
+  abilityTagHidden: { borderStyle: 'dashed' },
+  abilityText: { fontSize: 13, color: colors.ink },
 });
