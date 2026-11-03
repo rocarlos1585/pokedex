@@ -13,6 +13,12 @@ npm install
 npx expo start
 ```
 
+Pruebas:
+ 
+```bash
+npm test
+```
+
 ## Arquitectura y decisiones técnicas
 
 - Expo con template `blank-typescript`.
@@ -20,7 +26,7 @@ npx expo start
 - Clean Architecture con la siguiente estructura:
 ```
 src/
-├── components/, hooks/, navigation/, screens/, theme/   # Presentación
+├── components/, hooks/, navigation/, screens/, theme/, utils/   # Presentación
 ├── domain/       # Modelos, enums, tipos, interfaces, errores y casos de uso
 ├── data/         # DTOs, mappers, fuentes de datos y repositorios
 └── core/         # Cliente HTTP, almacenamiento e inyección de dependencias
@@ -33,7 +39,8 @@ src/
 | `@react-native-async-storage/async-storage` | Persistencia local clave-valor; suficiente para el volumen de datos de la app. Se accede a través de la interfaz `KeyValueStorage`. |
 | `@react-navigation/native`, `@react-navigation/native-stack` | Navegación entre listado y detalle con rutas y parámetros tipados; usa la navegación nativa de cada plataforma. |
 | `react-native-screens`, `react-native-safe-area-context` | Dependencias requeridas por `native-stack`; la segunda también gestiona las áreas seguras de la pantalla. |
- 
+| `jest`, `jest-expo`, `@types/jest` (desarrollo) | Ejecución de pruebas unitarias; `jest-expo` provee la configuración para el entorno de Expo. |
+| `@testing-library/react-native` (desarrollo) | Pruebas de componentes desde la perspectiva del usuario (texto, roles y etiquetas de accesibilidad). |
 
 ### Persistencia
  
