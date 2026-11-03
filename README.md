@@ -13,11 +13,17 @@ npm install
 npx expo start
 ```
 
-Pruebas:
+Pruebas y verificaciones:
  
 ```bash
-npm test
+npm test            # pruebas unitarias y de componentes
+npm run typecheck   # verificación de tipos
+npm run lint        # ESLint
 ```
+ 
+Las tres verificaciones se ejecutan automáticamente en GitHub Actions en cada push a `main`.
+ 
+Cubren formatters, mappers, casos de uso (con repositorio simulado), la estrategia de caché del repositorio, los reducers de estado y componentes de UI.
 
 ## Arquitectura y decisiones técnicas
 
