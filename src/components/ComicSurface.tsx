@@ -10,6 +10,7 @@ interface ComicSurfaceProps {
   readonly borderRadius?: number;
   readonly offset?: number;
   readonly pressed?: boolean;
+  readonly fill?: boolean;
 }
 
 export function ComicSurface({
@@ -20,9 +21,10 @@ export function ComicSurface({
   borderRadius = radii.lg,
   offset = shadow.offset,
   pressed = false,
+  fill = false,
 }: ComicSurfaceProps) {
   return (
-    <View style={[{ paddingRight: offset, paddingBottom: offset }, style]}>
+    <View style={[{ paddingRight: offset, paddingBottom: offset }, fill && styles.fill, style]}>
       <View
         style={[styles.shadow, { top: offset, left: offset, borderRadius }]}
         pointerEvents="none"
@@ -31,6 +33,7 @@ export function ComicSurface({
         style={[
           styles.surface,
           { backgroundColor, borderRadius },
+          fill && styles.fill,
           pressed && { transform: [{ translateX: offset }, { translateY: offset }] },
           contentStyle,
         ]}
@@ -49,9 +52,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.ink,
   },
   surface: {
-    flexGrow: 1,
     borderWidth: border.width,
     borderColor: colors.ink,
     overflow: 'hidden',
   },
+  fill: { flexGrow: 1 },
 });

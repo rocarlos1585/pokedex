@@ -39,7 +39,7 @@ function ListHeader({ loadedCount, isFromCache }: ListHeaderProps) {
 }
 
 export function PokemonListScreen({ navigation }: PokemonListScreenProps) {
-  const { state, retry, refresh, loadMore } = usePokemonList();
+  const { state, retry, refresh, loadMore, retryLoadMore } = usePokemonList();
 
   const handlePokemonPress = useCallback(
     (pokemon: PokemonSummary) => {
@@ -89,7 +89,7 @@ export function PokemonListScreen({ navigation }: PokemonListScreenProps) {
             <ListFooter
               isLoadingMore={state.isLoadingMore}
               errorMessage={state.transientError ? getErrorMessage(state.transientError) : null}
-              onRetry={loadMore}
+              onRetry={retryLoadMore}
             />
           }
         />
